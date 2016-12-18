@@ -1,0 +1,123 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "poster",
+            "otherEntityName": "picture",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "movie"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "backdrop",
+            "otherEntityName": "picture",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "movie"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "actor",
+            "otherEntityName": "actor",
+            "otherEntityRelationshipName": "movieActor"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "crew",
+            "otherEntityName": "crew",
+            "otherEntityRelationshipName": "movieCrew"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "artwork",
+            "otherEntityName": "picture",
+            "otherEntityRelationshipName": "movie"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "movie",
+            "relationshipName": "genre",
+            "otherEntityName": "genre",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "title",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required",
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 200
+        },
+        {
+            "fieldName": "originalTitle",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 200
+        },
+        {
+            "fieldName": "overview",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 40000
+        },
+        {
+            "fieldName": "releaseDate",
+            "fieldType": "LocalDate"
+        },
+        {
+            "fieldName": "runtime",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "voteRating",
+            "fieldType": "Float",
+            "fieldValidateRules": [
+                "min",
+                "max"
+            ],
+            "fieldValidateRulesMin": 0,
+            "fieldValidateRulesMax": 10
+        },
+        {
+            "fieldName": "voteCount",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "homepage",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "maxlength"
+            ],
+            "fieldValidateRulesMaxlength": 400
+        },
+        {
+            "fieldName": "budget",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "revenue",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "tmdbId",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20161217162115",
+    "entityTableName": "movie",
+    "dto": "mapstruct",
+    "pagination": "infinite-scroll",
+    "service": "serviceImpl",
+    "microserviceName": "vmms",
+    "searchEngine": "elasticsearch"
+}
