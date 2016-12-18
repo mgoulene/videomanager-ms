@@ -78,3 +78,4 @@ To set up a CI environment, consult the [Setting up Continuous Integration][] pa
 [Setting up Continuous Integration]: https://jhipster.github.io/documentation-archive/v3.12.1/setting-up-ci/
 
 [Gatling]: http://gatling.io/
+# videomanager-ms
