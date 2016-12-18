@@ -22,7 +22,7 @@ public class MovieDTO implements Serializable {
     @Size(max = 200)
     private String originalTitle;
 
-    @Size(max = 40000)
+    @Size(max = 20000)
     private String overview;
 
     private LocalDate releaseDate;

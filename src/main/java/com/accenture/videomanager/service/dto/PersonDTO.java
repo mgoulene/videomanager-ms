@@ -22,7 +22,7 @@ public class PersonDTO implements Serializable {
 
     private LocalDate deathday;
 
-    @Size(max = 40000)
+    @Size(max = 20000)
     private String biography;
 
     @Size(max = 1000)
@@ -35,7 +35,7 @@ public class PersonDTO implements Serializable {
 
 
     private Long profilePictureId;
-    
+
     public Long getId() {
         return id;
     }
