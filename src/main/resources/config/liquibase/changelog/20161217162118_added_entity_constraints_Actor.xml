@@ -7,10 +7,11 @@
         Added the constraints for entity Actor.
     -->
     <changeSet id="20161217162118-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="person_id"
                                  baseTableName="actor"
                                  constraintName="fk_actor_person_id"
+                                 onDelete="CASCADE"
                                  referencedColumnNames="id"
                                  referencedTableName="person"/>
 
@@ -18,6 +19,7 @@
                                  baseTableName="actor"
                                  constraintName="fk_actor_movie_actor_id"
                                  referencedColumnNames="id"
+                                 onDelete="CASCADE"
                                  referencedTableName="movie"/>
 
     </changeSet>

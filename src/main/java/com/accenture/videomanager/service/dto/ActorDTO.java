@@ -21,9 +21,12 @@ public class ActorDTO implements Serializable {
 
 
     private Long personId;
-    
+
+    private PersonDTO person;
+
+
     private Long movieActorId;
-    
+
     public Long getId() {
         return id;
     }
@@ -90,5 +93,14 @@ public class ActorDTO implements Serializable {
             ", actorOrder='" + actorOrder + "'" +
             ", actorCharacter='" + actorCharacter + "'" +
             '}';
+    }
+
+
+    public PersonDTO getPerson() {
+        return person;
+    }
+
+    public void setPerson(PersonDTO person) {
+        this.person = person;
     }
 }

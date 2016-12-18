@@ -71,6 +71,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
             MovieDb movieDb = TmdbDataLoader.the().getMovie(tmbdId);
             MovieDTO movieDTO = new MovieDTO();
             movieDTO.setTitle(movieDb.getTitle());
+            movieDTO = movieService.save(movieDTO);
             movieDTO.setOriginalTitle(movieDb.getOriginalTitle());
             movieDTO.setOverview(movieDb.getOverview());
             movieDTO.setTmdbId(movieDb.getId());
@@ -89,6 +90,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                 actorDTO.setActorCharacter(personCast.getCharacter());
                 actorDTO.setActorOrder(personCast.getOrder());
                 actorDTO.setPersonId(personDTO.getId());
+                actorDTO.setMovieActorId(movieDTO.getId());
                 actorDTO = actorService.save(actorDTO);
                 movieDTO.getActors().add(actorDTO);
 
@@ -100,20 +102,21 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                 crewDTO.setDepartment(personCrew.getDepartment());
                 crewDTO.setJob(personCrew.getJob());
                 crewDTO.setPersonId(personDTO.getId());
+                crewDTO.setMovieCrewId(movieDTO.getId());
                 crewDTO = crewService.save(crewDTO);
                 movieDTO.getCrews().add(crewDTO);
             }
             if (movieDb.getPosterPath() != null && movieDb.getPosterPath() != "") {
-                PictureDTO poster = savePictureFromTmdbPath(movieDb.getPosterPath(), PictureType.POSTER_MOVIE);
+                PictureDTO poster = savePictureFromTmdbPath(movieDb.getPosterPath(), PictureType.POSTER_MOVIE, null);
                 movieDTO.setPosterId(poster.getId());
             }
             if (movieDb.getBackdropPath() != null && movieDb.getBackdropPath() != "") {
-                PictureDTO backdrop = savePictureFromTmdbPath(movieDb.getBackdropPath(), PictureType.BACKDROP_MOVIE);
+                PictureDTO backdrop = savePictureFromTmdbPath(movieDb.getBackdropPath(), PictureType.BACKDROP_MOVIE, null);
                 movieDTO.setBackdropId(backdrop.getId());
             }
             MovieImages movieImages = TmdbDataLoader.the().getImages(movieDb.getId());
             for (int i = 0; i < movieImages.getPosters().size(); i++) {
-                PictureDTO artworkPictureDTO = savePictureFromTmdbPath(movieImages.getPosters().get(i).getFilePath(), PictureType.ARTWORK);
+                PictureDTO artworkPictureDTO = savePictureFromTmdbPath(movieImages.getPosters().get(i).getFilePath(), PictureType.ARTWORK, movieDTO.getId());
                 movieDTO.getArtworks().add(artworkPictureDTO);
             }
             for (int i = 0; i < movieDb.getGenres().size();i++) {
@@ -134,12 +137,13 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
 
     }
 
-    private PictureDTO savePictureFromTmdbPath(String tmdbPath, PictureType type) {
+    private PictureDTO savePictureFromTmdbPath(String tmdbPath, PictureType type, Long movieId) {
         byte[] bytes = TmdbDataLoader.the().getImageData(tmdbPath);
         PictureDTO pictureDTO = new PictureDTO();
         pictureDTO.setType(type);
         pictureDTO.setImageContentType(MimeTypeUtils.IMAGE_JPEG.getType());
         pictureDTO.setImage(bytes);
+        pictureDTO.setMovieId(movieId);
         pictureDTO = pictureService.save(pictureDTO);
         return pictureDTO;
 
@@ -171,7 +175,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
 
             personDTO.setTmdbId(personPeople.getId());
             if (personPeople.getProfilePath() != null && personPeople.getProfilePath() != "") {
-                PictureDTO personProfilePictureDTO = savePictureFromTmdbPath(personPeople.getProfilePath(), PictureType.PEOPLE);
+                PictureDTO personProfilePictureDTO = savePictureFromTmdbPath(personPeople.getProfilePath(), PictureType.PEOPLE, null);
                 personDTO.setProfilePictureId(personProfilePictureDTO.getId());
             }
             personDTO = personService.save(personDTO);

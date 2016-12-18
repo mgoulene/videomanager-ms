@@ -19,9 +19,11 @@ public class CrewDTO implements Serializable {
 
 
     private Long personId;
-    
+
+    private PersonDTO person;
+
     private Long movieCrewId;
-    
+
     public Long getId() {
         return id;
     }
@@ -88,5 +90,13 @@ public class CrewDTO implements Serializable {
             ", department='" + department + "'" +
             ", job='" + job + "'" +
             '}';
+    }
+
+    public PersonDTO getPerson() {
+        return person;
+    }
+
+    public void setPerson(PersonDTO person) {
+        this.person = person;
     }
 }

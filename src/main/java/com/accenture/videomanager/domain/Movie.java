@@ -9,9 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A Movie.
@@ -77,9 +75,10 @@ public class Movie implements Serializable {
     private Picture backdrop;
 
     @OneToMany(mappedBy = "movieActor")
+    @OrderBy("actorOrder")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Actor> actors = new HashSet<>();
+    private List<Actor> actors = new LinkedList<>();
 
     @OneToMany(mappedBy = "movieCrew")
     @JsonIgnore
@@ -275,11 +274,11 @@ public class Movie implements Serializable {
         this.backdrop = picture;
     }
 
-    public Set<Actor> getActors() {
+    public List<Actor> getActors() {
         return actors;
     }
 
-    public Movie actors(Set<Actor> actors) {
+    public Movie actors(List<Actor> actors) {
         this.actors = actors;
         return this;
     }
@@ -296,7 +295,7 @@ public class Movie implements Serializable {
         return this;
     }
 
-    public void setActors(Set<Actor> actors) {
+    public void setActors(List<Actor> actors) {
         this.actors = actors;
     }
 

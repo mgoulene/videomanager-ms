@@ -3,9 +3,7 @@ package com.accenture.videomanager.service.dto;
 import java.time.LocalDate;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Objects;
+import java.util.*;
 
 
 /**
@@ -51,7 +49,7 @@ public class MovieDTO implements Serializable {
 
     private Set<GenreDTO> genres = new HashSet<>();
 
-    private Set<ActorDTO> actors = new HashSet<>();
+    private List<ActorDTO> actors = new LinkedList<>();
 
     private Set<CrewDTO> crews = new HashSet<>();
 
@@ -206,11 +204,11 @@ public class MovieDTO implements Serializable {
             '}';
     }
 
-    public Set<ActorDTO> getActors() {
+    public List<ActorDTO> getActors() {
         return actors;
     }
 
-    public void setActors(Set<ActorDTO> actors) {
+    public void setActors(List<ActorDTO> actors) {
         this.actors = actors;
     }
 

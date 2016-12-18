@@ -7,11 +7,12 @@
         Added the constraints for entity Picture.
     -->
     <changeSet id="20161217162116-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="movie_id"
                                  baseTableName="picture"
                                  constraintName="fk_picture_movie_id"
                                  referencedColumnNames="id"
+                                 onDelete="CASCADE"
                                  referencedTableName="movie"/>
 
     </changeSet>

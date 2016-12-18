@@ -7,17 +7,19 @@
         Added the constraints for entity Crew.
     -->
     <changeSet id="20161217162119-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="person_id"
                                  baseTableName="crew"
                                  constraintName="fk_crew_person_id"
                                  referencedColumnNames="id"
+                                 onDelete="CASCADE"
                                  referencedTableName="person"/>
 
         <addForeignKeyConstraint baseColumnNames="movie_crew_id"
                                  baseTableName="crew"
                                  constraintName="fk_crew_movie_crew_id"
                                  referencedColumnNames="id"
+                                 onDelete="CASCADE"
                                  referencedTableName="movie"/>
 
     </changeSet>
