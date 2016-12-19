@@ -1,5 +1,6 @@
 package com.accenture.videomanager.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.data.elasticsearch.annotations.Document;
@@ -8,6 +9,8 @@ import javax.persistence.*;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 /**
@@ -35,7 +38,7 @@ public class Person implements Serializable {
     @Column(name = "deathday")
     private LocalDate deathday;
 
-    @Size(max = 40000)
+    @Size(max = 20000)
     @Column(name = "biography", length = 20000)
     private String biography;
 
@@ -53,6 +56,16 @@ public class Person implements Serializable {
     @OneToOne
     @JoinColumn(unique = true)
     private Picture profilePicture;
+
+    @OneToMany(mappedBy = "person")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Actor> actors = new HashSet<>();
+
+    @OneToMany(mappedBy = "person")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Crew> crews = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -164,6 +177,56 @@ public class Person implements Serializable {
 
     public void setProfilePicture(Picture picture) {
         this.profilePicture = picture;
+    }
+
+    public Set<Actor> getActors() {
+        return actors;
+    }
+
+    public Person actors(Set<Actor> actors) {
+        this.actors = actors;
+        return this;
+    }
+
+    public Person addActor(Actor actor) {
+        actors.add(actor);
+        actor.setPerson(this);
+        return this;
+    }
+
+    public Person removeActor(Actor actor) {
+        actors.remove(actor);
+        actor.setPerson(null);
+        return this;
+    }
+
+    public void setActors(Set<Actor> actors) {
+        this.actors = actors;
+    }
+
+    public Set<Crew> getCrews() {
+        return crews;
+    }
+
+    public Person crews(Set<Crew> crews) {
+        this.crews = crews;
+        return this;
+    }
+
+    public Person addCrew(Crew crew) {
+        crews.add(crew);
+        crew.setPerson(this);
+        return this;
+    }
+
+    public Person removeCrew(Crew crew) {
+        crews.remove(crew);
+        crew.setPerson(null);
+        return this;
+    }
+
+    public void setCrews(Set<Crew> crews) {
+        this.crews = crews;
     }
 
     @Override

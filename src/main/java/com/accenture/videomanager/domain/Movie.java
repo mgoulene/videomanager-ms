@@ -35,7 +35,7 @@ public class Movie implements Serializable {
     @Column(name = "original_title", length = 200)
     private String originalTitle;
 
-    @Size(max = 40000)
+    @Size(max = 20000)
     @Column(name = "overview", length = 20000)
     private String overview;
 

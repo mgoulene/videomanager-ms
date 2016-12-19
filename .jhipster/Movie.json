@@ -68,7 +68,7 @@
             "fieldValidateRules": [
                 "maxlength"
             ],
-            "fieldValidateRulesMaxlength": 40000
+            "fieldValidateRulesMaxlength": 20000
         },
         {
             "fieldName": "releaseDate",

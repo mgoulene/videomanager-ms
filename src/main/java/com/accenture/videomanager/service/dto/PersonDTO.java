@@ -35,7 +35,7 @@ public class PersonDTO implements Serializable {
 
 
     private Long profilePictureId;
-
+    
     public Long getId() {
         return id;
     }

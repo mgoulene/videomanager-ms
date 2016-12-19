@@ -27,43 +27,43 @@
             <column name="title" type="varchar(200)">
                 <constraints nullable="false" />
             </column>
-
+            
             <column name="original_title" type="varchar(200)">
                 <constraints nullable="true" />
             </column>
-
+            
             <column name="overview" type="varchar(20000)">
                 <constraints nullable="true" />
             </column>
-
+            
             <column name="release_date" type="date">
                 <constraints nullable="true" />
             </column>
-
+            
             <column name="runtime" type="integer">
                 <constraints nullable="true" />
             </column>
-
+            
             <column name="vote_rating" type="${floatType}">
                 <constraints nullable="true" />
             </column>
-
+            
             <column name="vote_count" type="integer">
                 <constraints nullable="true" />
             </column>
-
+            
             <column name="homepage" type="varchar(400)">
                 <constraints nullable="true" />
             </column>
-
+            
             <column name="budget" type="bigint">
                 <constraints nullable="true" />
             </column>
-
+            
             <column name="revenue" type="bigint">
                 <constraints nullable="true" />
             </column>
-
+            
             <column name="tmdb_id" type="integer">
                 <constraints nullable="true" />
             </column>
@@ -74,7 +74,7 @@
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-
+        
         <createTable tableName="movie_genre">
             <column name="genres_id" type="bigint">
                 <constraints nullable="false"/>
@@ -85,6 +85,6 @@
         </createTable>
 
         <addPrimaryKey columnNames="movies_id, genres_id" tableName="movie_genre"/>
-
+        
     </changeSet>
 </databaseChangeLog>

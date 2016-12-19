@@ -8,6 +8,18 @@
             "otherEntityField": "id",
             "ownerSide": true,
             "otherEntityRelationshipName": "person"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "actor",
+            "otherEntityName": "actor",
+            "otherEntityRelationshipName": "person"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "crew",
+            "otherEntityName": "crew",
+            "otherEntityRelationshipName": "person"
         }
     ],
     "fields": [
@@ -32,7 +44,7 @@
             "fieldValidateRules": [
                 "maxlength"
             ],
-            "fieldValidateRulesMaxlength": 40000
+            "fieldValidateRulesMaxlength": 20000
         },
         {
             "fieldName": "birthplace",
