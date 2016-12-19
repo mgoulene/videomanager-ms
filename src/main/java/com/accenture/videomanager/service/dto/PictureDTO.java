@@ -2,8 +2,6 @@ package com.accenture.videomanager.service.dto;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 import javax.persistence.Lob;
 
@@ -25,8 +23,6 @@ public class PictureDTO implements Serializable {
 
     private String imageContentType;
 
-    private Long movieId;
-    
     public Long getId() {
         return id;
     }
@@ -55,14 +51,6 @@ public class PictureDTO implements Serializable {
 
     public void setImageContentType(String imageContentType) {
         this.imageContentType = imageContentType;
-    }
-
-    public Long getMovieId() {
-        return movieId;
-    }
-
-    public void setMovieId(Long movieId) {
-        this.movieId = movieId;
     }
 
     @Override

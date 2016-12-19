@@ -12,22 +12,11 @@ import java.util.List;
 @Mapper(componentModel = "spring", uses = {})
 public interface PictureMapper {
 
-    @Mapping(source = "movie.id", target = "movieId")
     PictureDTO pictureToPictureDTO(Picture picture);
 
     List<PictureDTO> picturesToPictureDTOs(List<Picture> pictures);
 
-    @Mapping(source = "movieId", target = "movie")
     Picture pictureDTOToPicture(PictureDTO pictureDTO);
 
     List<Picture> pictureDTOsToPictures(List<PictureDTO> pictureDTOs);
-
-    default Movie movieFromId(Long id) {
-        if (id == null) {
-            return null;
-        }
-        Movie movie = new Movie();
-        movie.setId(id);
-        return movie;
-    }
 }

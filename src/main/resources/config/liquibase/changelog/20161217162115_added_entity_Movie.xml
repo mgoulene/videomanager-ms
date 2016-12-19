@@ -86,5 +86,16 @@
 
         <addPrimaryKey columnNames="movies_id, genres_id" tableName="movie_genre"/>
         
+        <createTable tableName="movie_artwork">
+            <column name="artworks_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="movies_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="movies_id, artworks_id" tableName="movie_artwork"/>
+        
     </changeSet>
 </databaseChangeLog>

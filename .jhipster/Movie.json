@@ -30,16 +30,18 @@
             "otherEntityRelationshipName": "movieCrew"
         },
         {
-            "relationshipType": "one-to-many",
-            "relationshipName": "artwork",
-            "otherEntityName": "picture",
-            "otherEntityRelationshipName": "movie"
-        },
-        {
             "relationshipType": "many-to-many",
             "otherEntityRelationshipName": "movie",
             "relationshipName": "genre",
             "otherEntityName": "genre",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "",
+            "relationshipName": "artwork",
+            "otherEntityName": "picture",
             "otherEntityField": "id",
             "ownerSide": true
         }

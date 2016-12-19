@@ -7,16 +7,18 @@
         Added the constraints for entity Movie.
     -->
     <changeSet id="20161217162115-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="poster_id"
                                  baseTableName="movie"
                                  constraintName="fk_movie_poster_id"
+                                 onDelete="CASCADE"
                                  referencedColumnNames="id"
                                  referencedTableName="picture"/>
 
         <addForeignKeyConstraint baseColumnNames="backdrop_id"
                                  baseTableName="movie"
                                  constraintName="fk_movie_backdrop_id"
+                                 onDelete="CASCADE"
                                  referencedColumnNames="id"
                                  referencedTableName="picture"/>
 
@@ -30,6 +32,19 @@
                                  constraintName="fk_movie_genre_genres_id"
                                  referencedColumnNames="id"
                                  referencedTableName="genre"/>
-        
+
+        <addForeignKeyConstraint baseColumnNames="movies_id"
+                                 baseTableName="movie_artwork"
+                                 constraintName="fk_movie_artwork_movies_id"
+                                 onDelete="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="movie"/>
+        <addForeignKeyConstraint baseColumnNames="artworks_id"
+                                 baseTableName="movie_artwork"
+                                 constraintName="fk_movie_artwork_artworks_id"
+                                 onDelete="CASCADE"
+                                 referencedColumnNames="id"
+                                 referencedTableName="picture"/>
+
     </changeSet>
 </databaseChangeLog>

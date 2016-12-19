@@ -85,17 +85,19 @@ public class Movie implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Crew> crews = new HashSet<>();
 
-    @OneToMany(mappedBy = "movie")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<Picture> artworks = new HashSet<>();
-
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "movie_genre",
                joinColumns = @JoinColumn(name="movies_id", referencedColumnName="ID"),
                inverseJoinColumns = @JoinColumn(name="genres_id", referencedColumnName="ID"))
     private Set<Genre> genres = new HashSet<>();
+
+    @ManyToMany
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JoinTable(name = "movie_artwork",
+               joinColumns = @JoinColumn(name="movies_id", referencedColumnName="ID"),
+               inverseJoinColumns = @JoinColumn(name="artworks_id", referencedColumnName="ID"))
+    private Set<Picture> artworks = new HashSet<>();
 
     public Long getId() {
         return id;
@@ -324,31 +326,6 @@ public class Movie implements Serializable {
         this.crews = crews;
     }
 
-    public Set<Picture> getArtworks() {
-        return artworks;
-    }
-
-    public Movie artworks(Set<Picture> pictures) {
-        this.artworks = pictures;
-        return this;
-    }
-
-    public Movie addArtwork(Picture picture) {
-        artworks.add(picture);
-        picture.setMovie(this);
-        return this;
-    }
-
-    public Movie removeArtwork(Picture picture) {
-        artworks.remove(picture);
-        picture.setMovie(null);
-        return this;
-    }
-
-    public void setArtworks(Set<Picture> pictures) {
-        this.artworks = pictures;
-    }
-
     public Set<Genre> getGenres() {
         return genres;
     }
@@ -372,6 +349,29 @@ public class Movie implements Serializable {
 
     public void setGenres(Set<Genre> genres) {
         this.genres = genres;
+    }
+
+    public Set<Picture> getArtworks() {
+        return artworks;
+    }
+
+    public Movie artworks(Set<Picture> pictures) {
+        this.artworks = pictures;
+        return this;
+    }
+
+    public Movie addArtwork(Picture picture) {
+        artworks.add(picture);
+        return this;
+    }
+
+    public Movie removeArtwork(Picture picture) {
+        artworks.remove(picture);
+        return this;
+    }
+
+    public void setArtworks(Set<Picture> pictures) {
+        this.artworks = pictures;
     }
 
     @Override

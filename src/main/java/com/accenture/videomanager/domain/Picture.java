@@ -39,9 +39,6 @@ public class Picture implements Serializable {
     @Column(name = "image_content_type", nullable = false)
     private String imageContentType;
 
-    @ManyToOne
-    private Movie movie;
-
     public Long getId() {
         return id;
     }
@@ -87,19 +84,6 @@ public class Picture implements Serializable {
 
     public void setImageContentType(String imageContentType) {
         this.imageContentType = imageContentType;
-    }
-
-    public Movie getMovie() {
-        return movie;
-    }
-
-    public Picture movie(Movie movie) {
-        this.movie = movie;
-        return this;
-    }
-
-    public void setMovie(Movie movie) {
-        this.movie = movie;
     }
 
     @Override

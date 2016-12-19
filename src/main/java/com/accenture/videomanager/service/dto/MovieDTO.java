@@ -55,7 +55,6 @@ public class MovieDTO implements Serializable {
 
     private Set<PictureDTO> artworks = new HashSet<>();
 
-
     public Long getId() {
         return id;
     }
@@ -165,6 +164,14 @@ public class MovieDTO implements Serializable {
         this.genres = genres;
     }
 
+    public Set<PictureDTO> getArtworks() {
+        return artworks;
+    }
+
+    public void setArtworks(Set<PictureDTO> pictures) {
+        this.artworks = pictures;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -220,11 +227,4 @@ public class MovieDTO implements Serializable {
         this.crews = crews;
     }
 
-    public Set<PictureDTO> getArtworks() {
-        return artworks;
-    }
-
-    public void setArtworks(Set<PictureDTO> artworks) {
-        this.artworks = artworks;
-    }
-}
+ }
