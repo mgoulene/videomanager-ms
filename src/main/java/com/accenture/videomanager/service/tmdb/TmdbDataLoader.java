@@ -9,6 +9,7 @@ import info.movito.themoviedbapi.TmdbSearch;
 import info.movito.themoviedbapi.model.Credits;
 import info.movito.themoviedbapi.model.MovieDb;
 import info.movito.themoviedbapi.model.MovieImages;
+import info.movito.themoviedbapi.model.core.ResponseStatusException;
 import info.movito.themoviedbapi.model.people.PersonPeople;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,14 +49,26 @@ public class TmdbDataLoader {
         tmbdCalls = new LimitedCallPerPeriodUtil(10000,35);
     }
 
-    public MovieDb getMovie(int movieId) {
+    public MovieDb getMovie(int movieId)  {
         tmbdCalls.waitForCall();
-        return movies.getMovie(movieId, LANGAGE);
+        MovieDb movieDb = null;
+        try {
+            return movies.getMovie(movieId, LANGAGE);
+        } catch (ResponseStatusException rse) {
+            // if error code is 34, then the resource does not exists
+            if (rse.getResponseStatus().getStatusCode() == 34) {
+                return null;
+            } else {
+                throw rse;
+            }
+
+        }
+
     }
 
     public Credits getCredits(int movieId)  {
         tmbdCalls.waitForCall();
-        return       movies.getCredits(movieId);
+        return movies.getCredits(movieId);
     }
 
     public MovieImages getImages(int movieId) {

@@ -14,7 +14,12 @@ import info.movito.themoviedbapi.model.people.PersonPeople;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.util.MimeTypeUtils;
 
 import javax.inject.Inject;
@@ -27,7 +32,6 @@ import java.util.List;
  * Created by vagrant on 12/14/16.
  */
 @Service
-@Transactional
 public class TMDBMovieServiceImpl implements TMDBMovieService {
     private final Logger log = LoggerFactory.getLogger(TMDBMovieServiceImpl.class);
     @Inject
@@ -62,76 +66,99 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
         return TmdbDataLoader.the().searchMovie(query);
     }
 
+    /*@Override
+    @Transactional(propagation= Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
+    public MovieDTO saveTMDBMovies(int fromId, int toId) {
+        log.debug("Request to import TlMDBMovies from "+fromId+" to " +toId);
+
+
+        MovieDTO result = null;
+        for (int i= fromId; i<=toId;i++) {
+            result = saveMovie(i);
+        }
+        return result;
+    }*/
+
+
     @Override
-    @Transactional
+    @Transactional(propagation= Propagation.REQUIRES_NEW)
     public MovieDTO saveMovie(int tmbdId) {
+        log.debug("Request to import TMDBMovie : "+tmbdId);
         MovieDTO result = movieService.findOneByTmdbId(tmbdId);
         // If null, than we need to create one
         if (result == null) {
             MovieDb movieDb = TmdbDataLoader.the().getMovie(tmbdId);
-            MovieDTO movieDTO = new MovieDTO();
-            movieDTO.setTitle(movieDb.getTitle());
-            movieDTO = movieService.save(movieDTO);
-            movieDTO.setOriginalTitle(movieDb.getOriginalTitle());
-            movieDTO.setOverview(movieDb.getOverview());
-            movieDTO.setTmdbId(movieDb.getId());
-            movieDTO.setBudget(movieDb.getBudget());
-            movieDTO.setHomepage(movieDb.getHomepage());
-            movieDTO.setReleaseDate(getLocalDate(movieDb.getReleaseDate()));
-            movieDTO.setRevenue(movieDb.getRevenue());
-            movieDTO.setRuntime(movieDb.getRuntime());
-            movieDTO.setVoteCount(movieDb.getVoteCount());
-            movieDTO.setVoteRating(movieDb.getVoteAverage());
-             Credits credits = TmdbDataLoader.the().getCredits(tmbdId);
-            for (int i = 0; i < credits.getCast().size(); i++) {
-                PersonCast personCast = credits.getCast().get(i);
-                PersonDTO personDTO = savePersonFromTmdbId(personCast.getId());
-                ActorDTO actorDTO = new ActorDTO();
-                actorDTO.setActorCharacter(personCast.getCharacter());
-                actorDTO.setActorOrder(personCast.getOrder());
-                actorDTO.setPersonId(personDTO.getId());
-                actorDTO.setMovieActorId(movieDTO.getId());
-                actorDTO = actorService.save(actorDTO);
-                movieDTO.getActors().add(actorDTO);
-
-            }
-            for (int i = 0; i < credits.getCrew().size(); i++) {
-                PersonCrew personCrew = credits.getCrew().get(i);
-                PersonDTO personDTO = savePersonFromTmdbId(personCrew.getId());
-                CrewDTO crewDTO = new CrewDTO();
-                crewDTO.setDepartment(personCrew.getDepartment());
-                crewDTO.setJob(personCrew.getJob());
-                crewDTO.setPersonId(personDTO.getId());
-                crewDTO.setMovieCrewId(movieDTO.getId());
-                crewDTO = crewService.save(crewDTO);
-                movieDTO.getCrews().add(crewDTO);
-            }
-            if (movieDb.getPosterPath() != null && movieDb.getPosterPath() != "") {
-                PictureDTO poster = savePictureFromTmdbPath(movieDb.getPosterPath(), PictureType.POSTER_MOVIE);
-                movieDTO.setPosterId(poster.getId());
-            }
-            if (movieDb.getBackdropPath() != null && movieDb.getBackdropPath() != "") {
-                PictureDTO backdrop = savePictureFromTmdbPath(movieDb.getBackdropPath(), PictureType.BACKDROP_MOVIE);
-                movieDTO.setBackdropId(backdrop.getId());
-            }
-            MovieImages movieImages = TmdbDataLoader.the().getImages(movieDb.getId());
-            for (int i = 0; i < movieImages.getPosters().size(); i++) {
-                PictureDTO artworkPictureDTO = savePictureFromTmdbPath(movieImages.getPosters().get(i).getFilePath(), PictureType.ARTWORK);
-                movieDTO.getArtworks().add(artworkPictureDTO);
-            }
-            for (int i = 0; i < movieDb.getGenres().size();i++) {
-                Genre genreDb = movieDb.getGenres().get(i);
-                GenreDTO genreDTO = genreService.findOneByName(genreDb.getName());
-                if (genreDTO == null) {
-                    genreDTO =new GenreDTO();
-                    genreDTO.setName(genreDb.getName());
-                    genreDTO = genreService.save(genreDTO);
+            if (movieDb != null) {
+                MovieDTO movieDTO = new MovieDTO();
+                movieDTO.setTitle(movieDb.getTitle());
+                movieDTO = movieService.save(movieDTO);
+                movieDTO.setOriginalTitle(movieDb.getOriginalTitle());
+                movieDTO.setOverview(movieDb.getOverview());
+                movieDTO.setTmdbId(movieDb.getId());
+                movieDTO.setBudget(movieDb.getBudget());
+                movieDTO.setHomepage(movieDb.getHomepage());
+                movieDTO.setReleaseDate(getLocalDate(movieDb.getReleaseDate()));
+                movieDTO.setRevenue(movieDb.getRevenue());
+                movieDTO.setRuntime(movieDb.getRuntime());
+                movieDTO.setVoteCount(movieDb.getVoteCount());
+                movieDTO.setVoteRating(movieDb.getVoteAverage());
+                Credits credits = TmdbDataLoader.the().getCredits(tmbdId);
+                for (int i = 0; i < credits.getCast().size(); i++) {
+                    PersonCast personCast = credits.getCast().get(i);
+                    PersonDTO personDTO = savePersonFromTmdbId(personCast.getId());
+                    ActorDTO actorDTO = new ActorDTO();
+                    actorDTO.setActorCharacter(personCast.getCharacter());
+                    actorDTO.setActorOrder(personCast.getOrder());
+                    actorDTO.setPersonId(personDTO.getId());
+                    actorDTO.setMovieActorId(movieDTO.getId());
+                    actorDTO = actorService.save(actorDTO);
+                    movieDTO.getActors().add(actorDTO);
 
                 }
-                movieDTO.getGenres().add(genreDTO);
+                for (int i = 0; i < credits.getCrew().size(); i++) {
+                    PersonCrew personCrew = credits.getCrew().get(i);
+                    PersonDTO personDTO = savePersonFromTmdbId(personCrew.getId());
+                    CrewDTO crewDTO = new CrewDTO();
+                    crewDTO.setDepartment(personCrew.getDepartment());
+                    crewDTO.setJob(personCrew.getJob());
+                    crewDTO.setPersonId(personDTO.getId());
+                    crewDTO.setMovieCrewId(movieDTO.getId());
+                    crewDTO = crewService.save(crewDTO);
+                    movieDTO.getCrews().add(crewDTO);
+                }
+                if (movieDb.getPosterPath() != null && movieDb.getPosterPath() != "") {
+                    PictureDTO poster = savePictureFromTmdbPath(movieDb.getPosterPath(), PictureType.POSTER_MOVIE);
+                    movieDTO.setPosterId(poster.getId());
+                }
+                if (movieDb.getBackdropPath() != null && movieDb.getBackdropPath() != "") {
+                    PictureDTO backdrop = savePictureFromTmdbPath(movieDb.getBackdropPath(), PictureType.BACKDROP_MOVIE);
+                    movieDTO.setBackdropId(backdrop.getId());
+                }
+                MovieImages movieImages = TmdbDataLoader.the().getImages(movieDb.getId());
+                for (int i = 0; i < movieImages.getPosters().size(); i++) {
+                    PictureDTO artworkPictureDTO = savePictureFromTmdbPath(movieImages.getPosters().get(i).getFilePath(), PictureType.ARTWORK);
+                    movieDTO.getArtworks().add(artworkPictureDTO);
+                }
+                for (int i = 0; i < movieDb.getGenres().size(); i++) {
+                    Genre genreDb = movieDb.getGenres().get(i);
+                    GenreDTO genreDTO = genreService.findOneByName(genreDb.getName());
+                    if (genreDTO == null) {
+                        genreDTO = new GenreDTO();
+                        genreDTO.setName(genreDb.getName());
+                        genreDTO = genreService.save(genreDTO);
+
+                    }
+                    movieDTO.getGenres().add(genreDTO);
+                }
+                //System.out.println("Creating Movie : " + movieDb.getTitle());
+                result = movieService.save(movieDTO);
+                log.debug("-->TMDBMovie "+tmbdId+" imported");
+            } else {
+                log.debug("-->TMDBMovie "+tmbdId+" does not exist");
             }
-            System.out.println("Creating Movie : " + movieDb.getTitle());
-            result = movieService.save(movieDTO);
+
+        } else {
+            log.debug("-->TMDBMovie "+tmbdId+" already imported");
         }
         return result;
 

@@ -55,6 +55,26 @@ public class TMDBMovieResource {
 
     }
 
+    @PostMapping("/_import/tmdb-movies")
+    @Timed
+    public ResponseEntity<MovieDTO> importRangeTMDBMovie(@RequestParam Long fromId, @RequestParam Long toId) throws URISyntaxException {
+        log.debug("REST request to import importRangeTMDBMovie : {}", fromId, toId);
+        MovieDTO lastCreatedMovieDTO = null;
+        for (int i= fromId.intValue(); i<=toId.intValue();i++) {
+            MovieDTO result = tmdbMovieService.saveMovie(i);
+            if (result != null) {
+                lastCreatedMovieDTO = result;
+            }
+        }
+
+        //MovieDTO lastCreatedMovieDTO = tmdbMovieService.saveTMDBMovies(fromId.intValue(),toId.intValue());
+        return ResponseEntity.created(new URI("/api/movies/" + lastCreatedMovieDTO.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert("movie", lastCreatedMovieDTO.getId().toString()))
+            .body(lastCreatedMovieDTO);
+
+
+    }
+
 
     /**
      * SEARCH  /_search/movies?query=:query : search for the movie corresponding

@@ -24,10 +24,10 @@ public class LimitedCallPerPeriodUtil {
     }
 
     private synchronized void clean() {
-        log.debug("clean(). Size is "+calls.size());
+        log.debug("Try to clean Stack. Size is "+calls.size()+"/"+callsPerPeriod);
         long timeToFree = System.currentTimeMillis() - period;
         while (calls.size() != 0 && calls.getFirst().longValue() < timeToFree) {
-            log.debug("Removing one Element");
+            //log.debug("Removing one Element");
             calls.removeFirst();
         }
 
@@ -38,7 +38,7 @@ public class LimitedCallPerPeriodUtil {
         long currentTimeMillis = System.currentTimeMillis();
         if (calls.size() >= callsPerPeriod) {
             long timeToSleep = period - (currentTimeMillis - calls.getFirst().longValue());
-            log.debug("Sleeping for "+timeToSleep+" ms");
+            log.debug("Stack Full. Sleeping for "+timeToSleep+" ms");
             try {
                 if (timeToSleep >0) {
                     Thread.sleep(timeToSleep);

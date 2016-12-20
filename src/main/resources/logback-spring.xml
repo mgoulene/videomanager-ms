@@ -53,6 +53,9 @@
     <logger name="liquibase" level="WARN"/>
     <logger name="LiquibaseSchemaResolver" level="INFO"/>
     <logger name="sun.rmi.transport" level="WARN"/>
+    <logger name="com.accenture.videomanager.aop.logging" level="WARN"/>
+    <logger name="com.accenture.videomanager.util" level="WARN"/>
+    <logger name="sun.net.www.protocol.http.HttpURLConnection" level="WARN"/>
 
     <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
         <resetJUL>true</resetJUL>
