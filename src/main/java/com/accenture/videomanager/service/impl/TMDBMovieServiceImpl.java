@@ -83,7 +83,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
     @Override
     @Transactional(propagation= Propagation.REQUIRES_NEW)
     public MovieDTO saveMovie(int tmbdId) {
-        log.debug("Request to import TMDBMovie : "+tmbdId);
+        log.debug("-> Import TMDBMovie : "+tmbdId+"-start");
         MovieDTO result = movieService.findOneByTmdbId(tmbdId);
         // If null, than we need to create one
         if (result == null) {
@@ -152,19 +152,20 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                 }
                 //System.out.println("Creating Movie : " + movieDb.getTitle());
                 result = movieService.save(movieDTO);
-                log.debug("-->TMDBMovie "+tmbdId+" imported");
+                log.debug("-> Import TMDBMovie "+tmbdId+" - end");
             } else {
-                log.debug("-->TMDBMovie "+tmbdId+" does not exist");
+                log.debug("-> Import TMDBMovie "+tmbdId+" - does not exist");
             }
 
         } else {
-            log.debug("-->TMDBMovie "+tmbdId+" already imported");
+            log.debug("-> Import TMDBMovie "+tmbdId+" - already importer");
         }
         return result;
 
     }
 
     private PictureDTO savePictureFromTmdbPath(String tmdbPath, PictureType type) {
+        log.debug("--> Import Picture "+tmdbPath+" - start");
         byte[] bytes = TmdbDataLoader.the().getImageData(tmdbPath);
         PictureDTO pictureDTO = new PictureDTO();
         pictureDTO.setType(type);
@@ -172,6 +173,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
         pictureDTO.setImage(bytes);
 
         pictureDTO = pictureService.save(pictureDTO);
+        log.debug("--> Import Picture "+tmdbPath+" - end");
         return pictureDTO;
 
     }
@@ -190,22 +192,31 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
     }
 
     private PersonDTO savePersonFromTmdbId(int tmdbId) {
+        log.debug("--> Import Person "+tmdbId+" - start");
         PersonDTO personDTO = personService.findOneByTmdbId(tmdbId);
         if (personDTO == null) {
-            PersonPeople personPeople = TmdbDataLoader.the().getPersonInfo(tmdbId);
-            personDTO = new PersonDTO();
-            personDTO.setHomepage(personPeople.getHomepage());
-            personDTO.setBiography(personPeople.getBiography());
-            personDTO.setBirthday(getLocalDate(personPeople.getBirthday()));
-            personDTO.setDeathday(getLocalDate(personPeople.getDeathday()));
-            personDTO.setName(personPeople.getName());
 
-            personDTO.setTmdbId(personPeople.getId());
-            if (personPeople.getProfilePath() != null && personPeople.getProfilePath() != "") {
-                PictureDTO personProfilePictureDTO = savePictureFromTmdbPath(personPeople.getProfilePath(), PictureType.PEOPLE);
-                personDTO.setProfilePictureId(personProfilePictureDTO.getId());
+            PersonPeople personPeople = TmdbDataLoader.the().getPersonInfo(tmdbId);
+            if (personPeople != null) {
+                personDTO = new PersonDTO();
+                personDTO.setHomepage(personPeople.getHomepage());
+                personDTO.setBiography(personPeople.getBiography());
+                personDTO.setBirthday(getLocalDate(personPeople.getBirthday()));
+                personDTO.setDeathday(getLocalDate(personPeople.getDeathday()));
+                personDTO.setName(personPeople.getName());
+
+                personDTO.setTmdbId(personPeople.getId());
+                if (personPeople.getProfilePath() != null && personPeople.getProfilePath() != "") {
+                    PictureDTO personProfilePictureDTO = savePictureFromTmdbPath(personPeople.getProfilePath(), PictureType.PEOPLE);
+                    personDTO.setProfilePictureId(personProfilePictureDTO.getId());
+                }
+                personDTO = personService.save(personDTO);
+                log.debug("--> Import Person "+tmdbId+" - end");
+            } else {
+                log.debug("--> Import Person "+tmdbId+" - does not exist");
             }
-            personDTO = personService.save(personDTO);
+        } else {
+            log.debug("--> Import Person "+tmdbId+" - already exist");
         }
         return personDTO;
     }

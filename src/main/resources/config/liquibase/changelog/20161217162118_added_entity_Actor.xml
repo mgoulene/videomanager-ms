@@ -27,11 +27,11 @@
             <column name="actor_order" type="integer">
                 <constraints nullable="false" />
             </column>
-            
-            <column name="actor_character" type="varchar(255)">
+
+            <column name="actor_character" type="varchar(1000)">
                 <constraints nullable="true" />
             </column>
-            
+
             <column name="person_id" type="bigint">
                 <constraints nullable="true" />
             </column>
@@ -42,6 +42,6 @@
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+
     </changeSet>
 </databaseChangeLog>

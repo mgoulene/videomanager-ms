@@ -24,7 +24,7 @@ public class LimitedCallPerPeriodUtil {
     }
 
     private synchronized void clean() {
-        log.debug("Try to clean Stack. Size is "+calls.size()+"/"+callsPerPeriod);
+        log.debug(""+calls.size());
         long timeToFree = System.currentTimeMillis() - period;
         while (calls.size() != 0 && calls.getFirst().longValue() < timeToFree) {
             //log.debug("Removing one Element");
