@@ -24,21 +24,23 @@ public class LimitedCallPerPeriodUtil {
     }
 
     private synchronized void clean() {
-        log.debug(""+calls.size());
+
         long timeToFree = System.currentTimeMillis() - period;
         while (calls.size() != 0 && calls.getFirst().longValue() < timeToFree) {
-            //log.debug("Removing one Element");
+            log.debug(System.identityHashCode(this) + " : Removing one of "+calls.size());
             calls.removeFirst();
         }
 
     }
 
     public synchronized void waitForCall() throws RuntimeException {
+        log.debug(System.identityHashCode(this) + " : Size is : "+calls.size());
         clean();
         long currentTimeMillis = System.currentTimeMillis();
-        if (calls.size() >= callsPerPeriod) {
+        while (calls.size() >= callsPerPeriod) {
+            clean();
             long timeToSleep = period - (currentTimeMillis - calls.getFirst().longValue());
-            log.debug("Stack Full. Sleeping for "+timeToSleep+" ms");
+            log.debug(System.identityHashCode(this) + " : Stack Full ("+calls.size()+"). Sleeping for "+timeToSleep+" ms");
             try {
                 if (timeToSleep >0) {
                     Thread.sleep(timeToSleep);
@@ -49,5 +51,6 @@ public class LimitedCallPerPeriodUtil {
             }
         }
         calls.addLast(new Long(currentTimeMillis));
+        log.debug(System.identityHashCode(this) + " : Adding new. Size is : "+calls.size());
     }
 }

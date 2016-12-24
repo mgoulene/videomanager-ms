@@ -7,12 +7,16 @@
         Added the constraints for entity Person.
     -->
     <changeSet id="20161217162120-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="profile_picture_id"
                                  baseTableName="person"
                                  constraintName="fk_person_profile_picture_id"
                                  referencedColumnNames="id"
                                  referencedTableName="picture"/>
+        <createIndex indexName="idx_person_tmdb_id"
+                     tableName="person">
+            <column name="tmdb_id" type="integer"/>
+        </createIndex>
 
     </changeSet>
 </databaseChangeLog>

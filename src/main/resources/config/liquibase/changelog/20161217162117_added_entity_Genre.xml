@@ -27,9 +27,13 @@
             <column name="name" type="varchar(255)">
                 <constraints nullable="false" />
             </column>
-            
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        
+        <createIndex indexName="idx_genre_name"
+                     tableName="genre">
+            <column name="name" type="varchar(255)"/>
+        </createIndex>
+
     </changeSet>
 </databaseChangeLog>

@@ -45,6 +45,10 @@
                                  onDelete="CASCADE"
                                  referencedColumnNames="id"
                                  referencedTableName="picture"/>
+        <createIndex indexName="idx_movie_tmdb_id"
+                     tableName="movie">
+            <column name="tmdb_id" type="integer"/>
+        </createIndex>
 
     </changeSet>
 </databaseChangeLog>
