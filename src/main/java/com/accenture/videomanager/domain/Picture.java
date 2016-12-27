@@ -31,17 +31,10 @@ public class Picture implements Serializable {
     @Column(name = "type", nullable = false)
     private PictureType type;
 
-    @Lob
-    @Column(name = "image")
-    private byte[] image;
-
-    @Column(name = "image_content_type")
-    private String imageContentType;
-
     @NotNull
     @Size(max = 100)
     @Column(name = "tmdb_id", length = 100, nullable = false)
-    private String tmdb_id;
+    private String tmdbId;
 
     public Long getId() {
         return id;
@@ -64,43 +57,17 @@ public class Picture implements Serializable {
         this.type = type;
     }
 
-    public byte[] getImage() {
-        return image;
+    public String getTmdbId() {
+        return tmdbId;
     }
 
-    public Picture image(byte[] image) {
-        this.image = image;
+    public Picture tmdbId(String tmdbId) {
+        this.tmdbId = tmdbId;
         return this;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public String getImageContentType() {
-        return imageContentType;
-    }
-
-    public Picture imageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-        return this;
-    }
-
-    public void setImageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-    }
-
-    public String getTmdb_id() {
-        return tmdb_id;
-    }
-
-    public Picture tmdb_id(String tmdb_id) {
-        this.tmdb_id = tmdb_id;
-        return this;
-    }
-
-    public void setTmdb_id(String tmdb_id) {
-        this.tmdb_id = tmdb_id;
+    public void setTmdbId(String tmdbId) {
+        this.tmdbId = tmdbId;
     }
 
     @Override
@@ -128,9 +95,7 @@ public class Picture implements Serializable {
         return "Picture{" +
             "id=" + id +
             ", type='" + type + "'" +
-            ", image='" + image + "'" +
-            ", imageContentType='" + imageContentType + "'" +
-            ", tmdb_id='" + tmdb_id + "'" +
+            ", tmdbId='" + tmdbId + "'" +
             '}';
     }
 }

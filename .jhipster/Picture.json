@@ -11,12 +11,7 @@
             ]
         },
         {
-            "fieldName": "image",
-            "fieldType": "byte[]",
-            "fieldTypeBlobContent": "image"
-        },
-        {
-            "fieldName": "tmdb_id",
+            "fieldName": "tmdbId",
             "fieldType": "String",
             "fieldValidateRules": [
                 "required",

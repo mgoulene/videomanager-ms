@@ -166,12 +166,9 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
 
     private PictureDTO savePictureFromTmdbPath(String tmdbPath, PictureType type) {
         log.debug("--> Import Picture "+tmdbPath+" - start");
-        byte[] bytes = TmdbDataLoader.the().getImageData(tmdbPath);
         PictureDTO pictureDTO = new PictureDTO();
         pictureDTO.setType(type);
-        pictureDTO.setImageContentType(MimeTypeUtils.IMAGE_JPEG.getType());
-        pictureDTO.setImage(bytes);
-        pictureDTO.setTmdb_id(tmdbPath);
+        pictureDTO.setTmdbId(tmdbPath.substring(1,tmdbPath.length()-4));
 
         pictureDTO = pictureService.save(pictureDTO);
         log.debug("--> Import Picture "+tmdbPath+" - end");

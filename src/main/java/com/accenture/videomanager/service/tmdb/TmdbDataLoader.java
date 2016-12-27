@@ -75,10 +75,6 @@ public class TmdbDataLoader {
         tmbdCalls.waitForCall();
         return movies.getImages(movieId, LANGAGE);
     }
-    public byte[] getImageData(String path) {
-        tmbdCalls.waitForCall();
-        return GetPictureFromURL.getBytes(api, path);
-    }
 
     public PersonPeople getPersonInfo(int personId) {
         tmbdCalls.waitForCall();

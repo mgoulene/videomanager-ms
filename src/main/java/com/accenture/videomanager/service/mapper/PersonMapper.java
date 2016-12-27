@@ -13,6 +13,7 @@ import java.util.List;
 public interface PersonMapper {
 
     @Mapping(source = "profilePicture.id", target = "profilePictureId")
+    @Mapping(source = "profilePicture.tmdbId", target = "profilePictureTmdbId")
     PersonDTO personToPersonDTO(Person person);
 
     List<PersonDTO> peopleToPersonDTOs(List<Person> people);

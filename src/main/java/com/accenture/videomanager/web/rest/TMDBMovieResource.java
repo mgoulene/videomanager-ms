@@ -62,20 +62,21 @@ public class TMDBMovieResource {
     public ResponseEntity<MovieDTO> importRangeTMDBMovie(@RequestParam Long fromId, @RequestParam Long toId) throws URISyntaxException {
         log.debug("REST request to import importRangeTMDBMovie : {}", fromId, toId);
         MovieDTO lastCreatedMovieDTO = null;
-        ExecutorService executor = Executors.newFixedThreadPool(2);
+        //ExecutorService executor = Executors.newFixedThreadPool(2);
 
         for (int i= fromId.intValue(); i<=toId.intValue();i++) {
-            Runnable importMovieWorker = new ImportMovieThread(i);
-            executor.execute(importMovieWorker);
-            //MovieDTO result = tmdbMovieService.saveMovie(i);
-            //if (result != null) {
-            //    lastCreatedMovieDTO = result;
-            //}
+            //lastCreatedMovieDTO = tmdbMovieService.saveMovie(i);
+            //Runnable importMovieWorker = new ImportMovieThread(i);
+            //executor.execute(importMovieWorker);
+            MovieDTO result = tmdbMovieService.saveMovie(i);
+            if (result != null) {
+                lastCreatedMovieDTO = result;
+            }
 
         }
         //executor.shutdown();
-        while (!executor.isTerminated()) {
-        }
+        //while (!executor.isTerminated()) {
+        //}
 
         //MovieDTO lastCreatedMovieDTO = tmdbMovieService.saveTMDBMovies(fromId.intValue(),toId.intValue());
         return ResponseEntity.created(new URI("/api/movies/" + lastCreatedMovieDTO.getId()))

@@ -3,7 +3,6 @@ package com.accenture.videomanager.service.dto;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
-import javax.persistence.Lob;
 
 import com.accenture.videomanager.domain.enumeration.PictureType;
 
@@ -17,13 +16,9 @@ public class PictureDTO implements Serializable {
     @NotNull
     private PictureType type;
 
-    @Lob
-    private byte[] image;
-
-    private String imageContentType;
     @NotNull
     @Size(max = 100)
-    private String tmdb_id;
+    private String tmdbId;
 
 
     public Long getId() {
@@ -40,27 +35,12 @@ public class PictureDTO implements Serializable {
     public void setType(PictureType type) {
         this.type = type;
     }
-    public byte[] getImage() {
-        return image;
+    public String getTmdbId() {
+        return tmdbId;
     }
 
-    public void setImage(byte[] image) {
-        this.image = image;
-    }
-
-    public String getImageContentType() {
-        return imageContentType;
-    }
-
-    public void setImageContentType(String imageContentType) {
-        this.imageContentType = imageContentType;
-    }
-    public String getTmdb_id() {
-        return tmdb_id;
-    }
-
-    public void setTmdb_id(String tmdb_id) {
-        this.tmdb_id = tmdb_id;
+    public void setTmdbId(String tmdbId) {
+        this.tmdbId = tmdbId;
     }
 
     @Override
@@ -89,8 +69,7 @@ public class PictureDTO implements Serializable {
         return "PictureDTO{" +
             "id=" + id +
             ", type='" + type + "'" +
-            ", image='" + image + "'" +
-            ", tmdb_id='" + tmdb_id + "'" +
+            ", tmdbId='" + tmdbId + "'" +
             '}';
     }
 }

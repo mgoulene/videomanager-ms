@@ -35,7 +35,9 @@ public class PersonDTO implements Serializable {
 
 
     private Long profilePictureId;
-    
+
+    private String profilePictureTmdbId;
+
     public Long getId() {
         return id;
     }
@@ -134,5 +136,13 @@ public class PersonDTO implements Serializable {
             ", homepage='" + homepage + "'" +
             ", tmdbId='" + tmdbId + "'" +
             '}';
+    }
+
+    public String getProfilePictureTmdbId() {
+        return profilePictureTmdbId;
+    }
+
+    public void setProfilePictureTmdbId(String profilePictureTmdbId) {
+        this.profilePictureTmdbId = profilePictureTmdbId;
     }
 }
