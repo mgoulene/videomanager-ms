@@ -14,6 +14,8 @@ public interface MovieMapper {
 
     @Mapping(source = "poster.id", target = "posterId")
     @Mapping(source = "backdrop.id", target = "backdropId")
+    @Mapping(source = "poster.tmdb_id", target = "posterTmdbId")
+    @Mapping(source = "backdrop.tmdb_id", target = "backdropTmdbId")
     MovieDTO movieToMovieDTO(Movie movie);
 
     List<MovieDTO> moviesToMovieDTOs(List<Movie> movies);

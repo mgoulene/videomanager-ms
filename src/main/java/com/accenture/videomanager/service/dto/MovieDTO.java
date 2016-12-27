@@ -47,6 +47,10 @@ public class MovieDTO implements Serializable {
 
     private Long backdropId;
 
+    private String posterTmdbId;
+
+    private String backdropTmdbId;
+
     private Set<GenreDTO> genres = new HashSet<>();
 
     private List<ActorDTO> actors = new LinkedList<>();
@@ -227,4 +231,19 @@ public class MovieDTO implements Serializable {
         this.crews = crews;
     }
 
- }
+    public String getPosterTmdbId() {
+        return posterTmdbId;
+    }
+
+    public void setPosterTmdbId(String posterTmdbId) {
+        this.posterTmdbId = posterTmdbId;
+    }
+
+    public String getBackdropTmdbId() {
+        return backdropTmdbId;
+    }
+
+    public void setBackdropTmdbId(String backdropTmdbId) {
+        this.backdropTmdbId = backdropTmdbId;
+    }
+}

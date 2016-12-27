@@ -29,9 +29,13 @@
             </column>
             
             <column name="image" type="longblob">
-                <constraints nullable="false" />
+                <constraints nullable="true" />
             </column>
             <column name="image_content_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            
+            <column name="tmdb_id" type="varchar(100)">
                 <constraints nullable="false" />
             </column>
             

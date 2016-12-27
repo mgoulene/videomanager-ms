@@ -17,11 +17,14 @@ public class PictureDTO implements Serializable {
     @NotNull
     private PictureType type;
 
-    @NotNull
     @Lob
     private byte[] image;
 
     private String imageContentType;
+    @NotNull
+    @Size(max = 100)
+    private String tmdb_id;
+
 
     public Long getId() {
         return id;
@@ -52,6 +55,13 @@ public class PictureDTO implements Serializable {
     public void setImageContentType(String imageContentType) {
         this.imageContentType = imageContentType;
     }
+    public String getTmdb_id() {
+        return tmdb_id;
+    }
+
+    public void setTmdb_id(String tmdb_id) {
+        this.tmdb_id = tmdb_id;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -80,6 +90,7 @@ public class PictureDTO implements Serializable {
             "id=" + id +
             ", type='" + type + "'" +
             ", image='" + image + "'" +
+            ", tmdb_id='" + tmdb_id + "'" +
             '}';
     }
 }

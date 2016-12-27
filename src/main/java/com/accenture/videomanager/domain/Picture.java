@@ -31,13 +31,17 @@ public class Picture implements Serializable {
     @Column(name = "type", nullable = false)
     private PictureType type;
 
-    @NotNull
     @Lob
-    @Column(name = "image", nullable = false)
+    @Column(name = "image")
     private byte[] image;
 
-    @Column(name = "image_content_type", nullable = false)
+    @Column(name = "image_content_type")
     private String imageContentType;
+
+    @NotNull
+    @Size(max = 100)
+    @Column(name = "tmdb_id", length = 100, nullable = false)
+    private String tmdb_id;
 
     public Long getId() {
         return id;
@@ -86,6 +90,19 @@ public class Picture implements Serializable {
         this.imageContentType = imageContentType;
     }
 
+    public String getTmdb_id() {
+        return tmdb_id;
+    }
+
+    public Picture tmdb_id(String tmdb_id) {
+        this.tmdb_id = tmdb_id;
+        return this;
+    }
+
+    public void setTmdb_id(String tmdb_id) {
+        this.tmdb_id = tmdb_id;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -113,6 +130,7 @@ public class Picture implements Serializable {
             ", type='" + type + "'" +
             ", image='" + image + "'" +
             ", imageContentType='" + imageContentType + "'" +
+            ", tmdb_id='" + tmdb_id + "'" +
             '}';
     }
 }
