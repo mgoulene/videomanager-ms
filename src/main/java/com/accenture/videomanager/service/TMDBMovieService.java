@@ -6,12 +6,31 @@ import info.movito.themoviedbapi.model.MovieDb;
 import java.util.List;
 
 /**
- * Created by vagrant on 12/14/16.
+ * Interface to retrieve Data from TMDB
  */
 public interface TMDBMovieService {
-    public MovieDb findOne(int tmdbId);
-    public List<MovieDb> searchTMDBMovies(String query);
-    public MovieDTO saveMovie(int tmbdId);
-    //public MovieDTO saveTMDBMovies(int fromId, int toId);
+    /**
+     * Find Movie data from TMDB
+     *
+     * @param tmdbId the id of the movie
+     * @return the movie data
+     */
+    MovieDb findOne(int tmdbId);
+
+    /**
+     * Find movies from a quesry
+     *
+     * @param query the movie query
+     * @return list of movie data
+     */
+    List<MovieDb> searchTMDBMovies(String query);
+
+    /**
+     * Save movie data from a TMDB movie id
+     *
+     * @param tmbdId the id of the movie
+     * @return the saved DTO of the movie
+     */
+    MovieDTO saveMovie(int tmbdId);
 
 }

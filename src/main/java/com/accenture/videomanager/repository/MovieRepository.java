@@ -13,10 +13,12 @@ import java.util.List;
 @SuppressWarnings("unused")
 public interface MovieRepository extends JpaRepository<Movie,Long> {
 
-    @Query("select distinct movie from Movie movie left join fetch movie.genres left join fetch movie.artworks left join fetch movie.actors left join fetch movie.crews")
+    // Initial Request : select distinct movie from Movie movie left join fetch movie.genres left join fetch movie.artworks
+    @Query("select distinct movie from Movie movie")
     List<Movie> findAllWithEagerRelationships();
 
-    @Query("select movie from Movie movie left join fetch movie.genres left join fetch movie.artworks left join fetch movie.actors left join fetch movie.crews where movie.id =:id")
+    // Initial request : select movie from Movie movie left join fetch movie.genres left join fetch movie.artworks where movie.id =:id
+    @Query("select movie from Movie movie where movie.id =:id")
     Movie findOneWithEagerRelationships(@Param("id") Long id);
 
     Movie findOneByTmdbId(int tmbdId);

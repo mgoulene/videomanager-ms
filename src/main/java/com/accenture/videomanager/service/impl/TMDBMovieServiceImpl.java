@@ -29,7 +29,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 
 /**
- * Created by vagrant on 12/14/16.
+ * Implementation of the Interface TMDBMovieService
  */
 @Service
 public class TMDBMovieServiceImpl implements TMDBMovieService {
@@ -48,8 +48,13 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
     private GenreService genreService;
 
     private DateTimeFormatter longDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private DateTimeFormatter shortDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy");
 
+    /**
+     * Find Movie data from TMDB
+     *
+     * @param tmdbId the id of the movie
+     * @return the movie data
+     */
     @Override
     @Transactional(readOnly = true)
     public MovieDb findOne(int tmdbId) {
@@ -58,28 +63,26 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
         return TmdbDataLoader.the().getMovie(tmdbId);
     }
 
+    /**
+     * Find movies from a quesry
+     *
+     * @param query the movie query
+     * @return list of movie data
+     */
     @Override
     @Transactional(readOnly = true)
     public List<MovieDb> searchTMDBMovies( String query) {
         log.debug("Request to search MovieDbs for query {}", query);
-
         return TmdbDataLoader.the().searchMovie(query);
     }
 
-    /*@Override
-    @Transactional(propagation= Propagation.REQUIRES_NEW, isolation = Isolation.SERIALIZABLE)
-    public MovieDTO saveTMDBMovies(int fromId, int toId) {
-        log.debug("Request to import TlMDBMovies from "+fromId+" to " +toId);
 
-
-        MovieDTO result = null;
-        for (int i= fromId; i<=toId;i++) {
-            result = saveMovie(i);
-        }
-        return result;
-    }*/
-
-
+    /**
+     * Save movie data from a TMDB movie id
+     *
+     * @param tmbdId the id of the movie
+     * @return the saved DTO of the movie
+     */
     @Override
     @Transactional(propagation= Propagation.REQUIRES_NEW)
     public MovieDTO saveMovie(int tmbdId) {
@@ -87,7 +90,9 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
         MovieDTO result = movieService.findOneByTmdbId(tmbdId);
         // If null, than we need to create one
         if (result == null) {
+            // retrieve the movie from TMDB
             MovieDb movieDb = TmdbDataLoader.the().getMovie(tmbdId);
+            // if it exists, then create and save the DTO
             if (movieDb != null) {
                 MovieDTO movieDTO = new MovieDTO();
                 movieDTO.setTitle(movieDb.getTitle());
@@ -103,6 +108,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                 movieDTO.setVoteCount(movieDb.getVoteCount());
                 movieDTO.setVoteRating(movieDb.getVoteAverage());
                 Credits credits = TmdbDataLoader.the().getCredits(tmbdId);
+                // Creates the Actors
                 for (int i = 0; i < credits.getCast().size(); i++) {
                     PersonCast personCast = credits.getCast().get(i);
                     PersonDTO personDTO = savePersonFromTmdbId(personCast.getId());
@@ -115,6 +121,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                     movieDTO.getActors().add(actorDTO);
 
                 }
+                // Creates the Crew
                 for (int i = 0; i < credits.getCrew().size(); i++) {
                     PersonCrew personCrew = credits.getCrew().get(i);
                     PersonDTO personDTO = savePersonFromTmdbId(personCrew.getId());
@@ -126,19 +133,23 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                     crewDTO = crewService.save(crewDTO);
                     movieDTO.getCrews().add(crewDTO);
                 }
+                // Creates the Poster
                 if (movieDb.getPosterPath() != null && movieDb.getPosterPath() != "") {
                     PictureDTO poster = savePictureFromTmdbPath(movieDb.getPosterPath(), PictureType.POSTER_MOVIE);
                     movieDTO.setPosterId(poster.getId());
                 }
+                // Creates the Backdrop
                 if (movieDb.getBackdropPath() != null && movieDb.getBackdropPath() != "") {
                     PictureDTO backdrop = savePictureFromTmdbPath(movieDb.getBackdropPath(), PictureType.BACKDROP_MOVIE);
                     movieDTO.setBackdropId(backdrop.getId());
                 }
+                // Creates the Artworks
                 MovieImages movieImages = TmdbDataLoader.the().getImages(movieDb.getId());
                 for (int i = 0; i < movieImages.getPosters().size(); i++) {
                     PictureDTO artworkPictureDTO = savePictureFromTmdbPath(movieImages.getPosters().get(i).getFilePath(), PictureType.ARTWORK);
                     movieDTO.getArtworks().add(artworkPictureDTO);
                 }
+                // Creates the Genre
                 for (int i = 0; i < movieDb.getGenres().size(); i++) {
                     Genre genreDb = movieDb.getGenres().get(i);
                     GenreDTO genreDTO = genreService.findOneByName(genreDb.getName());
@@ -150,7 +161,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                     }
                     movieDTO.getGenres().add(genreDTO);
                 }
-                //System.out.println("Creating Movie : " + movieDb.getTitle());
+                //Save the Movie
                 result = movieService.save(movieDTO);
                 log.debug("-> Import TMDBMovie "+tmbdId+" - end");
             } else {
@@ -164,36 +175,55 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
 
     }
 
+    /**
+     * Saves the Picture Data from its tmdbPath
+     * @param tmdbPath the path
+     * @param type the type
+     * @return the saved Picture
+     */
     private PictureDTO savePictureFromTmdbPath(String tmdbPath, PictureType type) {
         log.debug("--> Import Picture "+tmdbPath+" - start");
         PictureDTO pictureDTO = new PictureDTO();
         pictureDTO.setType(type);
+        // Truncate the start "/" and end ".jpg"
         pictureDTO.setTmdbId(tmdbPath.substring(1,tmdbPath.length()-4));
-
         pictureDTO = pictureService.save(pictureDTO);
         log.debug("--> Import Picture "+tmdbPath+" - end");
         return pictureDTO;
 
     }
 
+    /**
+     * Convert string date to LocalDate
+     * @param date The string date. Format is "yyyy-MM-dd" or "yyyy"
+     * @return The corresponding LocalDate
+     */
     private LocalDate getLocalDate(String date) {
         LocalDate ld = null;
+        // if size is 4, the date is "yyyy". Appends "-01-01"
         date = date.length() == 4 ? date = date+"-01-01":date;
         if (date != null && date != "") {
             try {
                 ld = LocalDate.parse(date, longDateTimeFormatter);
             } catch (DateTimeParseException e) {
-                ld = null; //LocalDate.parse(date, shortDateTimeFormatter);
+                ld = null;
             }
         }
         return ld;
     }
 
+    /**
+     * Save Person from tmdb Id
+     * @param tmdbId the profile TMDB id
+     * @return the saved Person
+     */
     private PersonDTO savePersonFromTmdbId(int tmdbId) {
         log.debug("--> Import Person "+tmdbId+" - start");
+        // Find if exists
         PersonDTO personDTO = personService.findOneByTmdbId(tmdbId);
+        // If it does not exist, then create it
         if (personDTO == null) {
-
+            // Load from TMDB
             PersonPeople personPeople = TmdbDataLoader.the().getPersonInfo(tmdbId);
             if (personPeople != null) {
                 personDTO = new PersonDTO();
@@ -202,12 +232,13 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                 personDTO.setBirthday(getLocalDate(personPeople.getBirthday()));
                 personDTO.setDeathday(getLocalDate(personPeople.getDeathday()));
                 personDTO.setName(personPeople.getName());
-
                 personDTO.setTmdbId(personPeople.getId());
+                // Get the Profile Picture
                 if (personPeople.getProfilePath() != null && personPeople.getProfilePath() != "") {
                     PictureDTO personProfilePictureDTO = savePictureFromTmdbPath(personPeople.getProfilePath(), PictureType.PEOPLE);
                     personDTO.setProfilePictureId(personProfilePictureDTO.getId());
                 }
+                // Save it
                 personDTO = personService.save(personDTO);
                 log.debug("--> Import Person "+tmdbId+" - end");
             } else {
