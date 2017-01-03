@@ -1,6 +1,8 @@
 package com.accenture.videomanager.service.impl;
 
+import com.accenture.videomanager.domain.TMDBImporterLog;
 import com.accenture.videomanager.domain.enumeration.PictureType;
+import com.accenture.videomanager.repository.TMDBImporterLogRepository;
 import com.accenture.videomanager.service.*;
 import com.accenture.videomanager.service.dto.*;
 import com.accenture.videomanager.service.tmdb.TmdbDataLoader;
@@ -46,6 +48,8 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
     private CrewService crewService;
     @Inject
     private GenreService genreService;
+    @Inject
+    private TMDBImporterLogRepository tmdbImporterLogRepository;
 
     private DateTimeFormatter longDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -94,6 +98,8 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
             MovieDb movieDb = TmdbDataLoader.the().getMovie(tmbdId);
             // if it exists, then create and save the DTO
             if (movieDb != null) {
+                TMDBImporterLog importLog = new TMDBImporterLog();
+                importLog.start(movieDb.getId());
                 MovieDTO movieDTO = new MovieDTO();
                 movieDTO.setTitle(movieDb.getTitle());
                 movieDTO = movieService.save(movieDTO);
@@ -111,7 +117,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                 // Creates the Actors
                 for (int i = 0; i < credits.getCast().size(); i++) {
                     PersonCast personCast = credits.getCast().get(i);
-                    PersonDTO personDTO = savePersonFromTmdbId(personCast.getId());
+                    PersonDTO personDTO = savePersonFromTmdbId(personCast.getId(), importLog);
                     ActorDTO actorDTO = new ActorDTO();
                     actorDTO.setActorCharacter(personCast.getCharacter());
                     actorDTO.setActorOrder(personCast.getOrder());
@@ -124,7 +130,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                 // Creates the Crew
                 for (int i = 0; i < credits.getCrew().size(); i++) {
                     PersonCrew personCrew = credits.getCrew().get(i);
-                    PersonDTO personDTO = savePersonFromTmdbId(personCrew.getId());
+                    PersonDTO personDTO = savePersonFromTmdbId(personCrew.getId(), importLog);
                     CrewDTO crewDTO = new CrewDTO();
                     crewDTO.setDepartment(personCrew.getDepartment());
                     crewDTO.setJob(personCrew.getJob());
@@ -163,6 +169,8 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
                 }
                 //Save the Movie
                 result = movieService.save(movieDTO);
+                importLog.stop();
+                tmdbImporterLogRepository.save(importLog);
                 log.debug("-> Import TMDBMovie "+tmbdId+" - end");
             } else {
                 log.debug("-> Import TMDBMovie "+tmbdId+" - does not exist");
@@ -171,6 +179,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
         } else {
             log.debug("-> Import TMDBMovie "+tmbdId+" - already importer");
         }
+
         return result;
 
     }
@@ -217,8 +226,9 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
      * @param tmdbId the profile TMDB id
      * @return the saved Person
      */
-    private PersonDTO savePersonFromTmdbId(int tmdbId) {
+    private PersonDTO savePersonFromTmdbId(int tmdbId, TMDBImporterLog importLog) {
         log.debug("--> Import Person "+tmdbId+" - start");
+        importLog.addPerson();
         // Find if exists
         PersonDTO personDTO = personService.findOneByTmdbId(tmdbId);
         // If it does not exist, then create it
@@ -226,6 +236,7 @@ public class TMDBMovieServiceImpl implements TMDBMovieService {
             // Load from TMDB
             PersonPeople personPeople = TmdbDataLoader.the().getPersonInfo(tmdbId);
             if (personPeople != null) {
+                importLog.addImportedPerson();
                 personDTO = new PersonDTO();
                 personDTO.setHomepage(personPeople.getHomepage());
                 personDTO.setBiography(personPeople.getBiography());

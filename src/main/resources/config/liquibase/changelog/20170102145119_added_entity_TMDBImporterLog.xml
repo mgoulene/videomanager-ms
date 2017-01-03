@@ -14,26 +14,39 @@
     <property name="autoIncrement" value="true" dbms="mysql,h2,postgresql,oracle,mssql"/>
 
     <property name="floatType" value="float4" dbms="postgresql, h2"/>
-    <property name="flloatType" value="float" dbms="mysql, oracle, mssql"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
 
     <!--
-        Added the entity Picture.
+        Added the entity TMDBImporterLog.
     -->
-    <changeSet id="20161217162116-1" author="jhipster">
-        <createTable tableName="picture">
+    <changeSet id="20170102145119-1" author="jhipster">
+        <createTable tableName="tmdbimporter_log">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="type" type="varchar(255)">
+            <column name="tmdb_id" type="integer">
                 <constraints nullable="false" />
             </column>
-
-            <column name="tmdb_id" type="varchar(100)">
+            
+            <column name="number_of_people" type="integer">
                 <constraints nullable="false" />
             </column>
-
+            
+            <column name="number_of_imported_people" type="integer">
+                <constraints nullable="false" />
+            </column>
+            
+            <column name="start_time" type="timestamp">
+                <constraints nullable="false" />
+            </column>
+            
+            <column name="import_duration" type="bigint">
+                <constraints nullable="false" />
+            </column>
+            
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-
+        <dropDefaultValue tableName="tmdbimporter_log" columnName="start_time" columnDataType="datetime"/>
+        
     </changeSet>
 </databaseChangeLog>

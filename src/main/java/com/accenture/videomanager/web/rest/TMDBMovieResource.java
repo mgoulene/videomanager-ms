@@ -59,10 +59,10 @@ public class TMDBMovieResource {
 
     @PostMapping("/_import/tmdb-movies")
     @Timed
-    public ResponseEntity<MovieDTO> importRangeTMDBMovie(@RequestParam Long fromId, @RequestParam Long toId) throws URISyntaxException {
+    public void importRangeTMDBMovie(@RequestParam Long fromId, @RequestParam Long toId) throws URISyntaxException {
         log.debug("REST request to import importRangeTMDBMovie : {}", fromId, toId);
         MovieDTO lastCreatedMovieDTO = null;
-        ExecutorService executor = Executors.newFixedThreadPool(2);
+        ExecutorService executor = Executors.newFixedThreadPool(1);
 
         for (int i= fromId.intValue(); i<=toId.intValue();i++) {
             //lastCreatedMovieDTO = tmdbMovieService.saveMovie(i);
@@ -79,9 +79,9 @@ public class TMDBMovieResource {
         }
 
         //MovieDTO lastCreatedMovieDTO = tmdbMovieService.saveTMDBMovies(fromId.intValue(),toId.intValue());
-        return ResponseEntity.created(new URI("/api/movies/" + lastCreatedMovieDTO.getId()))
+        /*return ResponseEntity.created(new URI("/api/movies/" + lastCreatedMovieDTO.getId()))
             .headers(HeaderUtil.createEntityCreationAlert("movie", lastCreatedMovieDTO.getId().toString()))
-            .body(lastCreatedMovieDTO);
+            .body(lastCreatedMovieDTO);*/
 
 
     }

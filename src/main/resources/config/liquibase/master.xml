@@ -11,6 +11,7 @@
     <include file="classpath:config/liquibase/changelog/20161217162118_added_entity_Actor.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20161217162119_added_entity_Crew.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20161217162120_added_entity_Person.xml" relativeToChangelogFile="false"/>
+    <include file="classpath:config/liquibase/changelog/20170102145119_added_entity_TMDBImporterLog.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="classpath:config/liquibase/changelog/20161217162115_added_entity_constraints_Movie.xml" relativeToChangelogFile="false"/>
     <include file="classpath:config/liquibase/changelog/20161217162118_added_entity_constraints_Actor.xml" relativeToChangelogFile="false"/>
