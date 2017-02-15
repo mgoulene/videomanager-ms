@@ -1,0 +1,91 @@
+entity Movie {
+	title String required maxlength(200),
+	originalTitle String maxlength(200),
+    overview String maxlength(20000),
+    releaseDate LocalDate,
+    runtime Integer,
+    voteRating Float min(0) max(10),
+    voteCount Integer,
+    homepage String maxlength(400),
+    budget Long,
+    revenue Long,
+   	tmdbId Integer
+}
+
+
+
+
+entity Picture {
+	type PictureType required,
+	tmdbId String required maxlength(100)
+}
+
+entity Genre {
+	name String required
+}
+
+entity Actor {
+	actorOrder Integer required,
+	actorCharacter String maxlength(1000)
+}
+
+entity Crew {
+	department String,
+	job String
+}
+
+entity Person {
+	name String required,
+	birthday LocalDate,
+	deathday LocalDate,
+	biography String maxlength(20000),
+	birthplace String maxlength(1000),
+	homepage String maxlength(400),
+	tmdbId Integer
+}
+
+entity TMDBImporterLog {
+	tmdbId Integer required,
+	numberOfPeople Integer required,
+	numberOfImportedPeople Integer required,
+	importDuration Long required,
+	startTime  ZonedDateTime
+}
+
+enum PictureType {
+    POSTER_MOVIE, ARTWORK, PEOPLE, BACKDROP_MOVIE
+}
+relationship OneToOne {
+  Movie{poster} to Picture,
+  Movie{backdrop} to Picture,
+  Person{profilePicture} to Picture
+}
+
+relationship ManyToOne {
+  Actor{person} to Person{actor},
+  Crew{person} to Person{crew}
+   
+}
+
+relationship OneToMany {
+	Movie{actor} to Actor{movieActor},
+	Movie{crew} to Crew{movieCrew}
+	
+	
+	
+}
+
+relationship ManyToMany {
+	Movie{genre} to Genre{movie},
+	Movie{artwork} to Picture	
+}
+
+paginate * with infinite-scroll
+
+
+dto * with mapstruct except TMDBImporterLog
+
+// Set service options to all except few
+service all with serviceImpl except TMDBImporterLog
+microservice * with vmms except TMDBImporterLog
+search * with elasticsearch except TMDBImporterLog

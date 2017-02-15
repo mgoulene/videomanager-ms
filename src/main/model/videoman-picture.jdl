@@ -1,0 +1,12 @@
+entity Picture {
+	image ImageBlob required,
+	tmdbId String required maxlength(100),
+	size Integer
+}
+
+paginate * with infinite-scroll
+
+
+// Set service options to all except few
+service all with serviceImpl
+microservice * with vmpicture
